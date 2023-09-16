@@ -1,0 +1,21 @@
+Id,Name,Value,IsUsable,IsEquippable,IsTradable,IsUpgradable,UpgradeLevel,RequiredLevel,MinAttackValue,MaxAttackValue,EquippableBy,IsRarityDepend,IsStackable
+1000,Wooden Sword,10,0,1,1,1,0,0,10,13,0,1,0
+1001,Wooden Sword +1,50,0,1,1,1,1,0,14,17,0,1,0
+1002,Wooden Sword +2,100,0,1,1,1,2,0,18,21,0,1,0
+1003,Wooden Sword +3,150,0,1,1,1,3,0,22,25,0,1,0
+1004,Wooden Sword +4,200,0,1,1,1,4,0,26,29,0,1,0
+1005,Wooden Sword +5,250,0,1,1,1,5,0,30,33,0,1,0
+1006,Wooden Sword +6,300,0,1,1,1,6,0,34,37,0,1,0
+1007,Wooden Sword +7,350,0,1,1,1,7,0,38,41,0,1,0
+1008,Wooden Sword +8,400,0,1,1,1,8,0,42,45,0,1,0
+1009,Wooden Sword +9,450,0,1,1,1,9,0,46,49,0,1,0
+1010,Long Sword,20,0,1,1,1,0,5,18,21,0,1,0
+1011,Long Sword +1,75,0,1,1,1,1,5,22,25,0,1,0
+1012,Long Sword +2,150,0,1,1,1,2,5,26,29,0,1,0
+1013,Long Sword +3,225,0,1,1,1,3,5,30,33,0,1,0
+1014,Long Sword +4,300,0,1,1,1,4,5,34,37,0,1,0
+1015,Long Sword +5,375,0,1,1,1,5,5,38,41,0,1,0
+1016,Long Sword +6,450,0,1,1,1,6,5,42,45,0,1,0
+1017,Long Sword +7,525,0,1,1,1,7,5,46,49,0,1,0
+1018,Long Sword +8,600,0,1,1,1,8,5,50,53,0,1,0
+1019,Long Sword +9,675,0,1,1,1,9,5,54,57,0,1,0

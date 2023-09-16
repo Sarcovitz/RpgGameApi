@@ -1,0 +1,11 @@
+Id,IsEquippable,IsRarityDepend,IsTradable,IsUpgradable,IsUsable,Name,RequiredLevel,UpgradeLevel,Value,EquippableBy,DefenseValue,IsRarityDepend,IsStackable
+13000,1,1,1,1,0,Scratched Armor,0,0,10,0,10,1,0
+13001,1,1,1,1,0,Scratched Armor +1,0,1,50,0,16,1,0
+13002,1,1,1,1,0,Scratched Armor +2,0,2,100,0,22,1,0
+13003,1,1,1,1,0,Scratched Armor +3,0,3,150,0,28,1,0
+13004,1,1,1,1,0,Scratched Armor +4,0,4,200,0,34,1,0
+13005,1,1,1,1,0,Scratched Armor +5,0,5,250,0,40,1,0
+13006,1,1,1,1,0,Scratched Armor +6,0,6,300,0,46,1,0
+13007,1,1,1,1,0,Scratched Armor +7,0,7,350,0,52,1,0
+13008,1,1,1,1,0,Scratched Armor +8,0,5,400,0,58,1,0
+13009,1,1,1,1,0,Scratched Armor +9,0,9,450,0,64,1,0

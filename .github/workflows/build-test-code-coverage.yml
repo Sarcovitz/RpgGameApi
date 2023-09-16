@@ -1,0 +1,46 @@
+name: Build, Test and Code Coverage Report
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOTNET_VERSION: '6.0.413'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build and Test with Code Coverage
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=../coverage/
+
+    - name: Generate Coverage Report
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+    
+    - name: Create HTML Report
+      run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/coverage-report -reporttypes:Html_Dark -classfilters:"-RpgGame.Configuration.*;-RpgGame.Data.*;-Program"
+
+    - name: Delete Previous Coverage Artifacts
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: coverage-report
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: ./coverage/coverage-report
+

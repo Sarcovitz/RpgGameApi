@@ -1,0 +1,46 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: tests and code coverage report on pull requests
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  DOTNET_VERSION: '6.0.413'
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+      
+    - name: Test with cobertura report
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=../coverage/
+      
+    - name: Install HTML report generator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    - name: Create HTML Report
+      run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/coverage-report -reporttypes:Html_Dark -classfilters:"-RpgGame.Configuration.*;-RpgGame.Data.*;-Program"
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: ./coverage/coverage-report

@@ -1,0 +1,11 @@
+global using Moq;
+global using NUnit.Framework;
+global using RpgGame.Controllers;
+global using RpgGame.Models.DTO;
+global using RpgGame.Models.Request;
+global using RpgGame.Models.Entity;
+global using RpgGame.Models.Misc;
+global using RpgGame.Services.Interfaces;
+global using RpgGame.Services;
+global using RpgGame.Repositories;
+global using RpgGame.Repositories.Interfaces;
