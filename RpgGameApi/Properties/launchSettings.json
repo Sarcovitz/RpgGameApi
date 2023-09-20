@@ -2,11 +2,9 @@
   "profiles": {
     "RpgGameApi": {
       "commandName": "Project",
+      "commandLineArgs": "--environment Development",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7198;http://localhost:5147"
     },
@@ -20,10 +18,8 @@
     },
     "RpgGameApiProd": {
       "commandName": "Project",
+      "commandLineArgs": "--environment Production",
       "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
-      },
       "applicationUrl": "https://localhost:7198;http://localhost:5147"
     }
   },

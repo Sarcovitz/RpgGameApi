@@ -367,3 +367,5 @@ coverage/
 /RpgGameApi/appsettings.json
 /RpgGameApi/appsettings.Development.json
 /RpgGameApi/appsettings.Production.json
+/RpgGameApi/log4net.Development.config
+/RpgGameApi/log4net.Production.config

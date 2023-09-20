@@ -1,3 +1,5 @@
+using log4net;
+using log4net.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +15,15 @@ using RpgGame.Services;
 using RpgGame.Services.Interfaces;
 using System.Text;
 
+ILog _logger = LogManager.GetLogger(typeof(Program));
+
 var builder = WebApplication.CreateBuilder(args);
+
+XmlConfigurator.Configure(new FileInfo($"log4net.{builder.Environment.EnvironmentName}.config"));
 
 //Configuration
 builder.Configuration.AddJsonFile("appsettings.json", false, true);
-builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", false, true);
 
 var emailConfig = builder.Configuration.GetSection("EmailConfig");
 builder.Services.Configure<EmailConfig>(emailConfig);
@@ -118,5 +124,7 @@ app.UseAuthorization();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
+
+_logger.Info("@@@@@ Program is staring @@@@@");
 
 app.Run();
