@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Configuration
 builder.Configuration.AddJsonFile("appsettings.json", false, true);
-builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", false, true);
 
 var emailConfig = builder.Configuration.GetSection("EmailConfig");
 builder.Services.Configure<EmailConfig>(emailConfig);
