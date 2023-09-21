@@ -30,7 +30,7 @@ public class EmailService : IEmailService
         };
     }
 
-    public async Task SendAccountConfirmationEmailAsync(User user)
+    public void SendAccountConfirmationEmail(User user)
     {
         try
         {
@@ -50,7 +50,7 @@ public class EmailService : IEmailService
                 IsBodyHtml = true
             };
 
-            await Task.Run(() => _smtpClient.SendAsync(msg, null));            
+            _smtpClient.SendAsync(msg, null);
         }
         catch { }
     }

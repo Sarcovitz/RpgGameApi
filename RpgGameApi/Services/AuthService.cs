@@ -109,7 +109,7 @@ public class AuthService : IAuthService
 
         if (!user.IsConfirmed)
         {
-            await _emailService.SendAccountConfirmationEmailAsync(user);
+            _emailService.SendAccountConfirmationEmail(user);
             throw new ArgumentException($"This account is not confirmed, confirmation link has been sent to: {user.Email}");
         }
 
@@ -141,7 +141,7 @@ public class AuthService : IAuthService
         };
 
         newUser = await _userRepository.CreateAsync(newUser);
-        await _emailService.SendAccountConfirmationEmailAsync(newUser);
+        _emailService.SendAccountConfirmationEmail(newUser);
         
         var result = new RegisterUserDTO()
         {
@@ -187,7 +187,7 @@ public class AuthService : IAuthService
         if (user.IsConfirmed) 
             throw new ArgumentException("User is already confirmed");
 
-        await _emailService.SendAccountConfirmationEmailAsync(user);
+        _emailService.SendAccountConfirmationEmail(user);
 
         return new SuccessDTO()
         {

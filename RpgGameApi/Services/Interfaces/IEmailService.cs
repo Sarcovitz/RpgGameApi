@@ -7,5 +7,5 @@ namespace RpgGame.Services.Interfaces;
 
 public interface IEmailService
 {
-    Task SendAccountConfirmationEmailAsync(User user);
+    void SendAccountConfirmationEmail(User user);
 }
