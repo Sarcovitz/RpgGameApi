@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-  test:
+  test-and-report:
     runs-on: ubuntu-latest
 
     needs: build
@@ -42,15 +42,6 @@ jobs:
         
     - name: Test with cobertura report
       run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=../coverage/
-
-  coverage-report:
-    runs-on: ubuntu-latest
-
-    needs: test
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
 
     - name: Install HTML report generator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
