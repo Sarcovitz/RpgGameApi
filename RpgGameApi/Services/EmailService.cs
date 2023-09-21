@@ -52,6 +52,9 @@ public class EmailService : IEmailService
 
             _smtpClient.SendAsync(msg, null);
         }
-        catch { }
+        catch 
+        {
+            throw new Exception($"Error while sending confirmation e-mail. Address: {user.Email}");
+        }
     }
 }
