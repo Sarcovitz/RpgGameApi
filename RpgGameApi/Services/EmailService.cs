@@ -5,6 +5,8 @@ using System.Text;
 using RpgGame.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using RpgGame.Configuration;
+using RpgGame.Providers.Interfaces;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RpgGame.Services;
 
@@ -12,46 +14,43 @@ public class EmailService : IEmailService
 {
     private readonly EmailConfig _emailConfig;
     private readonly AppConfig _appConfig;
-    private readonly SmtpClient _smtpClient;
+    private readonly ISmtpClientProvider _smtpClient;
 
-    public EmailService(IOptions<AppConfig> appConfig, IOptions<EmailConfig> emailConfig)
+    public EmailService(IOptions<AppConfig> appConfig, IOptions<EmailConfig> emailConfig, ISmtpClientProvider smtpClient)
     {
         _appConfig = appConfig.Value;
         _emailConfig = emailConfig.Value;
-        _smtpClient = new SmtpClient(_emailConfig.SmtpHost)
-        {
-            Port = _emailConfig.Port,
-            UseDefaultCredentials = _emailConfig.UseDefaultCredentials,
-            Credentials = new NetworkCredential()
-            {
-                UserName = _emailConfig.EmailAddress,
-                Password = _emailConfig.EmailPassword
-            }
-        };
+        _smtpClient = smtpClient;
     }
 
-    public async Task SendAccountConfirmationEmailAsync(User user)
+    public bool SendAccountConfirmationEmail(User user)
     {
-        try
+        string userDataRaw = $"{user.Username}:{user.Id}:{user.Email}";
+        string userData = Convert.ToBase64String(Encoding.UTF8.GetBytes(userDataRaw));
+        string userDataUrl = WebUtility.UrlEncode(userData);
+
+        MailAddress mailFrom = new(_emailConfig.EmailAddress, "RPG GAME");
+        MailAddress mailTo = new(user.Email, user.Username.ToUpper());
+
+        MailMessage msg = new(mailFrom, mailTo)
         {
-            string userDataRaw = $"{user.Username}:{user.Id}:{user.Email}";
-            string userData = Convert.ToBase64String(Encoding.UTF8.GetBytes(userDataRaw));
-            string userDataUrl = WebUtility.UrlEncode(userData);
+            SubjectEncoding = Encoding.UTF8,
+            BodyEncoding = Encoding.UTF8,
+            Subject = "Confirmation Mail",
+            Body = $"<h1><a href=\"{_appConfig.Url}/auth/confirm-account/{userDataUrl}\"> Confirm Account </a></h1>",
+            IsBodyHtml = true
+        };
 
-            MailAddress mailFrom = new(_emailConfig.EmailAddress, "RPG GAME");
-            MailAddress mailTo = new(user.Email, user.Username.ToUpper());
-
-            MailMessage msg = new(mailFrom, mailTo)
-            {
-                SubjectEncoding = Encoding.UTF8,
-                BodyEncoding = Encoding.UTF8,
-                Subject = "Confirmation Mail",
-                Body = $"<h1><a href=\"{_appConfig.Url}/auth/confirm-account/{userDataUrl}\"> Confirm Account </a></h1>",
-                IsBodyHtml = true
-            };
-
-            await Task.Run(() => _smtpClient.SendAsync(msg, null));            
+        try 
+        { 
+            _smtpClient.Send(msg);
         }
-        catch { }
+        catch 
+        {
+            //TODO add logs
+            return false;
+        }
+
+        return true;
     }
 }

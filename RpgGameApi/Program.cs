@@ -53,6 +53,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //PROVIDERS
 builder.Services.AddSingleton<ITimeHelper, TimeHelper>();
+builder.Services.AddSingleton<ISmtpClientProvider, SmtpClientProvider>();
 
 //MIDDLEWARE
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();

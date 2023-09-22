@@ -109,8 +109,11 @@ public class AuthService : IAuthService
 
         if (!user.IsConfirmed)
         {
-            await _emailService.SendAccountConfirmationEmailAsync(user);
-            throw new ArgumentException($"This account is not confirmed, confirmation link has been sent to: {user.Email}");
+            bool result = _emailService.SendAccountConfirmationEmail(user);
+            if (result)
+                throw new ArgumentException($"This account is not confirmed, confirmation link has been sent to: {user.Email}");
+            else
+                throw new Exception($"This account is not confirmed, confirmation link could not be sent, please contact support.");
         }
 
         user.LastLoginDate = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -141,8 +144,11 @@ public class AuthService : IAuthService
         };
 
         newUser = await _userRepository.CreateAsync(newUser);
-        await _emailService.SendAccountConfirmationEmailAsync(newUser);
-        
+        bool emailSendingResult = _emailService.SendAccountConfirmationEmail(newUser);
+
+        if(!emailSendingResult)
+            throw new Exception($"Account has been created but confirmation link could not be sent, please contact support.");
+
         var result = new RegisterUserDTO()
         {
             Id = newUser.Id,
@@ -187,7 +193,10 @@ public class AuthService : IAuthService
         if (user.IsConfirmed) 
             throw new ArgumentException("User is already confirmed");
 
-        await _emailService.SendAccountConfirmationEmailAsync(user);
+        bool result = _emailService.SendAccountConfirmationEmail(user);
+        
+        if (!result)
+            throw new Exception("Confirmation link could not be sent, please contact support.");
 
         return new SuccessDTO()
         {
