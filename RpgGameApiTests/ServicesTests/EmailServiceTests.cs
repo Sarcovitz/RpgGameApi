@@ -56,6 +56,8 @@ public class EmailServiceTests
         };
 
         bool result = _emailService.SendAccountConfirmationEmail(user);
+
+        Assert.That(result, Is.True);
     }
 
 
