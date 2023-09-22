@@ -144,9 +144,9 @@ public class AuthService : IAuthService
         };
 
         newUser = await _userRepository.CreateAsync(newUser);
-        bool emailSent = _emailService.SendAccountConfirmationEmail(newUser);
+        bool emailSendingResult = _emailService.SendAccountConfirmationEmail(newUser);
 
-        if(!emailSent)
+        if(!emailSendingResult)
             throw new Exception($"Account has been created but confirmation link could not be sent, please contact support.");
 
         var result = new RegisterUserDTO()
@@ -196,7 +196,7 @@ public class AuthService : IAuthService
         bool result = _emailService.SendAccountConfirmationEmail(user);
         
         if (!result)
-            throw new Exception($"Confirmation link could not be sent, please contact support.");
+            throw new Exception("Confirmation link could not be sent, please contact support.");
 
         return new SuccessDTO()
         {

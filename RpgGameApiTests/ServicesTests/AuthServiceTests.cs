@@ -365,11 +365,14 @@ public class AuthServiceTests
 
         string returnedPasswordHash = "Password";
 
-        _userRepositoryMock.Setup(x => x.GetByUsernameAsync(It.IsAny<string>()))
-            .ReturnsAsync(user);
-
         _cryptographyServiceMock.Setup(x => x.Sha256Hash(It.IsAny<string>()))
             .Returns(returnedPasswordHash);
+
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(true);
+
+        _userRepositoryMock.Setup(x => x.GetByUsernameAsync(It.IsAny<string>()))
+            .ReturnsAsync(user);
 
         SetAuthService();
 
@@ -382,6 +385,48 @@ public class AuthServiceTests
         string expectedMessage = $"This account is not confirmed, confirmation link has been sent to: {user.Email}";
 
         var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _authService.LoginAsync(loginRequest);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void LoginAsync_WhenUserIsUnconfirmedAndEmailSendingFails_ShouldThrowException()
+    {
+        User user = new()
+        {
+            Username = "Username",
+            Id = 123,
+            Email = "test@test.pl",
+            IsConfirmed = false,
+            Role = UserRole.Player,
+            Password = "Password"
+        };
+
+        string returnedPasswordHash = "Password";
+
+        _cryptographyServiceMock.Setup(x => x.Sha256Hash(It.IsAny<string>()))
+            .Returns(returnedPasswordHash);
+
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(false);
+
+        _userRepositoryMock.Setup(x => x.GetByUsernameAsync(It.IsAny<string>()))
+            .ReturnsAsync(user);
+
+        SetAuthService();
+
+        LoginUserRequest loginRequest = new()
+        {
+            Password = "Password",
+            Username = "Username"
+        };
+
+        string expectedMessage = "This account is not confirmed, confirmation link could not be sent, please contact support.";
+
+        var exception = Assert.ThrowsAsync<Exception>(async () =>
         {
             await _authService.LoginAsync(loginRequest);
         });
@@ -408,6 +453,9 @@ public class AuthServiceTests
             Username = "Username",
             Email = "test@test.com",
         };
+
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(true);
 
         _userRepositoryMock.Setup(x => x.GetByUsernameAsync(It.IsAny<string>()))
             .ReturnsAsync(nullUser);
@@ -513,6 +561,39 @@ public class AuthServiceTests
         string expectedMessage = "User with supplied e-mail already exists.";
 
         var exception = Assert.ThrowsAsync<DuplicateNameException>(async () =>
+        {
+            await _authService.RegisterAsync(registerRequest);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void RegisterAsync_WhenEmailSendoingFails_ShouldThrowException()
+    {
+        RegisterUserRequest registerRequest = new()
+        {
+            Email = "test@test.com",
+            Username = "Username",
+            Password = "Password",
+            Password2 = "Password",
+        };
+
+        User? nullUser = null;
+
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(false);
+
+        _userRepositoryMock.Setup(x => x.GetByUsernameAsync(It.IsAny<string>()))
+            .ReturnsAsync(nullUser);
+        _userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync(nullUser);
+
+        SetAuthService();
+
+        string expectedMessage = "Account has been created but confirmation link could not be sent, please contact support.";
+
+        var exception = Assert.ThrowsAsync<Exception>(async () =>
         {
             await _authService.RegisterAsync(registerRequest);
         });
@@ -740,6 +821,9 @@ public class AuthServiceTests
 
         User? user = new();
 
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(true);
+
         _userRepositoryMock.Setup(x => x.GetByData(It.IsAny<ulong>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(user);
 
@@ -753,7 +837,7 @@ public class AuthServiceTests
     }
     
     [Test]
-    public async Task ResendConfirmationMailAsync_WhenUserIsNotFound_ThrowsKeyNotFoundException()
+    public void ResendConfirmationMailAsync_WhenUserIsNotFound_ThrowsKeyNotFoundException()
     {
         ulong id = 123;
         string email = "test@test.pl";
@@ -777,7 +861,7 @@ public class AuthServiceTests
     }
     
     [Test]
-    public async Task ResendConfirmationMailAsync_WhenUserIsAlreadyConfirmed_ThrowsArgumentException()
+    public void ResendConfirmationMailAsync_WhenUserIsAlreadyConfirmed_ThrowsArgumentException()
     {
         ulong id = 123;
         string email = "test@test.pl";
@@ -796,6 +880,36 @@ public class AuthServiceTests
         string expectedMessage = "User is already confirmed";
 
         var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _authService.ResendConfirmationMailAsync(id, email, username);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void ResendConfirmationMailAsync_WhenEmailSendingFails_ThrowsException()
+    {
+        ulong id = 123;
+        string email = "test@test.pl";
+        string username = "username";
+
+        User? user = new()
+        {
+            IsConfirmed = false,
+        };
+
+        _emailServiceMock.Setup(x => x.SendAccountConfirmationEmail(It.IsAny<User>()))
+            .Returns(false);
+
+        _userRepositoryMock.Setup(x => x.GetByData(It.IsAny<ulong>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(user);
+
+        SetAuthService();
+
+        string expectedMessage = "Confirmation link could not be sent, please contact support.";
+
+        var exception = Assert.ThrowsAsync<Exception>(async () =>
         {
             await _authService.ResendConfirmationMailAsync(id, email, username);
         });
