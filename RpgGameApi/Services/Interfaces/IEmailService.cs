@@ -7,5 +7,5 @@ namespace RpgGame.Services.Interfaces;
 
 public interface IEmailService
 {
-    void SendAccountConfirmationEmail(User user);
+    bool SendAccountConfirmationEmail(User user);
 }

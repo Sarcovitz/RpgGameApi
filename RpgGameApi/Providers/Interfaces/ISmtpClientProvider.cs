@@ -4,5 +4,5 @@ namespace RpgGame.Providers.Interfaces;
 
 public interface ISmtpClientProvider
 {
-    void SendAsync(MailMessage msg);
+    void Send(MailMessage msg);
 }
