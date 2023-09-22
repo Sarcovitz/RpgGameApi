@@ -4,6 +4,7 @@ using RpgGame.Providers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,13 +41,13 @@ public class EmailServiceTests
         _emailService = new EmailService(_appOptions, _emailOptions, _smtpClientMock.Object);
     }
 
-    public void SetupEmailService()
+    private void SetupEmailService() //Uncomment when necessary
     {
         _emailService = new EmailService(_appOptions, _emailOptions, _smtpClientMock.Object);
     }
 
     [Test]
-    public void SendAccountConfirmationEmail_OnSuccess()
+    public void SendAccountConfirmationEmail_OnSuccess_ShouldReturnTrue()
     {
         User? user = new()
         {
@@ -59,6 +60,24 @@ public class EmailServiceTests
 
         Assert.That(result, Is.True);
     }
+    
+    [Test]
+    public void SendAccountConfirmationEmail_WhenSendThrowsAnException_ShouldReturnFalse()
+    {
+        _smtpClientMock.Setup(x => x.Send(It.IsAny<MailMessage>()))
+            .Throws(new Exception());
 
+        SetupEmailService();
 
+        User? user = new()
+        {
+            Username = "Username",
+            Id = 123,
+            Email = "test@test.pl",
+        };
+
+        bool result = _emailService.SendAccountConfirmationEmail(user);
+
+        Assert.That(result, Is.False);
+    }
 }

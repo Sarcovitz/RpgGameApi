@@ -48,7 +48,6 @@ public class EmailService : IEmailService
         catch 
         {
             //TODO add logs
-            //throw new Exception($"Error while sending confirmation e-mail. Address: {user.Email}");
             return false;
         }
 
