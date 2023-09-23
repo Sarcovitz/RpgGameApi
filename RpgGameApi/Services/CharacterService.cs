@@ -27,7 +27,8 @@ public class CharacterService : ICharacterService
         if (existingCharacter is not null)
             throw new ArgumentException("Character with supplied name already exists.");
 
-        User? user = await _userRepository.GetByIdAsync(userId) ??
+        User? user = await _userRepository.GetByIdAsync(userId);
+        if (user is null)
             throw new Exception("User cannot be obtained from supplied token");
 
         List<Character> userCharacters = await _characterRepository.GetByUserAsync(userId);
