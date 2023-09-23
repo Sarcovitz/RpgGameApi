@@ -66,7 +66,10 @@ public class CharacterServiceTests
         var result = await _characterService.CreateAsync(userId, request);
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<CreateCharacterDTO>());
-        Assert.That(result.Id, Is.EqualTo(expectedResult.Id));
-        Assert.That(result.Name, Is.EqualTo(expectedResult.Name));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Id, Is.EqualTo(expectedResult.Id));
+            Assert.That(result.Name, Is.EqualTo(expectedResult.Name));
+        });
     }
 }
