@@ -22,11 +22,14 @@ public class CharacterService : ICharacterService
     {
         if (!Enum.IsDefined(request.Class)) 
             throw new ArgumentException("Supplied character class is wrong.");
-        if (await _characterRepository.GetByNameAsync(request.Name!) is not null)
+
+        Character? existingCharacter = await _characterRepository.GetByNameAsync(request.Name!);
+        if (existingCharacter is not null)
             throw new ArgumentException("Character with supplied name already exists.");
 
         User? user = await _userRepository.GetByIdAsync(userId) ??
             throw new Exception("User cannot be obtained from supplied token");
+
         List<Character> userCharacters = await _characterRepository.GetByUserAsync(userId);
         if (user.CharacterSlots <= userCharacters.Count)
             throw new ArgumentException($"User character limit ({user.CharacterSlots}) has been reached.");
@@ -50,7 +53,7 @@ public class CharacterService : ICharacterService
 
     public async Task<List<Character>> GetAllAsync(ulong userId)
     {
-        List<Character> result = await _characterRepository.GetByUserAsync(userId);
+        List<Character> result = await _characterRepository.GetByUserIdAsync(userId);
 
         return result;
     }
