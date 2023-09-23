@@ -27,4 +27,46 @@ public class CharacterServiceTests
     {
         _characterService = new CharacterService(_characterRepositoryMock.Object, _userRepositoryMock.Object);
     }
+
+    [Test]
+    public async Task CreateAsync_OnSuccess_ReturnsCreateCharacterDTO()
+    {
+        ulong userId = 123;
+        CreateCharacterRequest? request = new()
+        {
+            Class = CharacterClass.Warrior,
+            Name = "Character",
+        };
+        User? user = new();
+        List<Character> characterList = new();
+        Character? nullCharacter = null;
+        Character createdCharacter = new()
+        {
+            Id = 123,
+            Name = "Character"
+        };
+        CreateCharacterDTO expectedResult = new()
+        {
+            Id = 123,
+            Name = "Character",
+        };
+
+        _characterRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+            .ReturnsAsync(nullCharacter);
+        _characterRepositoryMock.Setup(x => x.GetByUserAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(characterList);
+        _characterRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Character>()))
+            .ReturnsAsync(createdCharacter);
+
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(user);
+
+        SetupCharacterService();
+
+        var result = await _characterService.CreateAsync(userId, request);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<CreateCharacterDTO>());
+        Assert.That(result.Id, Is.EqualTo(expectedResult.Id));
+        Assert.That(result.Name, Is.EqualTo(expectedResult.Name));
+    }
 }

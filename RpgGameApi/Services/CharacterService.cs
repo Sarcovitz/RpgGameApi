@@ -53,7 +53,7 @@ public class CharacterService : ICharacterService
 
     public async Task<List<Character>> GetAllAsync(ulong userId)
     {
-        List<Character> result = await _characterRepository.GetByUserIdAsync(userId);
+        List<Character> result = await _characterRepository.GetByUserAsync(userId);
 
         return result;
     }
