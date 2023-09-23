@@ -80,7 +80,7 @@ public class CharacterServiceTests
         ulong userId = 123;
         CreateCharacterRequest? request = new()
         {
-            Class = (CharacterClass) 123,
+            Class = (CharacterClass)123,
             Name = "Character",
         };
 
@@ -119,7 +119,7 @@ public class CharacterServiceTests
 
         Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
-    
+
     [Test]
     public void CreateAsync_WhenUserNotFound_ThrowsException()
     {
@@ -149,7 +149,7 @@ public class CharacterServiceTests
 
         Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
-    
+
     [Test]
     public void CreateAsync_WhenCharacterSlotsAreNotEnough_ThrowsArgumentException()
     {
@@ -189,5 +189,22 @@ public class CharacterServiceTests
         });
 
         Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+
+    [Test]
+    public async Task DeleteAsync_OnSuccess_ThrowsException()
+    {
+        ulong characterId = 123;
+
+        _characterRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(true);
+
+        SetupCharacterService();
+
+        var result = await _characterService.DeleteAsync(characterId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<SuccessDTO>());
+        Assert.That(result.IsSuccess, Is.True);
     }
 }
