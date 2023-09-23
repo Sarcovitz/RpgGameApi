@@ -192,7 +192,7 @@ public class CharacterServiceTests
     }
 
     [Test]
-    public async Task DeleteAsync_OnSuccess_ThrowsException()
+    public async Task DeleteAsync_OnSuccess_ReturnsSuccessDTO()
     {
         ulong characterId = 123;
 
