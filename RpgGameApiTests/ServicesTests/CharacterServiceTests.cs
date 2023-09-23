@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RpgGame.Models.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -108,6 +109,77 @@ public class CharacterServiceTests
 
         _characterRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
             .ReturnsAsync(foundCharacter);
+
+        SetupCharacterService();
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _characterService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void CreateAsync_WhenUserNotFound_ThrowsException()
+    {
+        ulong userId = 123;
+        CreateCharacterRequest? request = new()
+        {
+            Class = CharacterClass.Warrior,
+            Name = "Character",
+        };
+        Character? nullCharatcer = null;
+        User? nullUser = null;
+
+        string expectedMessage = "User cannot be obtained from supplied token";
+
+        _characterRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+            .ReturnsAsync(nullCharatcer);
+
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(nullUser);
+
+        SetupCharacterService();
+
+        var exception = Assert.ThrowsAsync<Exception>(async () =>
+        {
+            await _characterService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void CreateAsync_WhenCharacterSlotsAreNotEnough_ThrowsArgumentException()
+    {
+        ulong userId = 123;
+        CreateCharacterRequest? request = new()
+        {
+            Class = CharacterClass.Warrior,
+            Name = "Character",
+        };
+        Character? nullCharatcer = null;
+        User? user = new()
+        {
+            CharacterSlots = 3,
+        };
+        List<Character> characterList = new()
+        {
+            new Character(),
+            new Character(),
+            new Character(),
+        };
+
+        string expectedMessage = $"User character limit ({user.CharacterSlots}) has been reached.";
+
+        _characterRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+            .ReturnsAsync(nullCharatcer);
+        _characterRepositoryMock.Setup(x => x.GetByUserAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(characterList);
+
+        _userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(user);
 
         SetupCharacterService();
 
