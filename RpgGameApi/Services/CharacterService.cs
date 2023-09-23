@@ -68,7 +68,7 @@ public class CharacterService : ICharacterService
     {
         Character? character = await _characterRepository.GetByIdAsync(characterId);
         if (character is null)
-            throw new KeyNotFoundException("There is no character with this Id");
+            throw new KeyNotFoundException("There is no character with this ID");
 
         return character;
     }

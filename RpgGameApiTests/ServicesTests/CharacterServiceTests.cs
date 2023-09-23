@@ -2,6 +2,7 @@
 using RpgGame.Models.Entity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -268,5 +269,45 @@ public class CharacterServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<List<Character>>());
         Assert.That(result.Count, Is.EqualTo(characters.Count));
+    }
+
+    [Test]
+    public async Task GetByIdAsync_OnSucess_ReturnsCharacter()
+    {
+        ulong characterId = 123;
+
+        Character? character = new();
+
+        _characterRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(character);
+
+        SetupCharacterService();
+
+        var result = await _characterService.GetByIdAsync(characterId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<Character>());
+    }
+    
+    [Test]
+    public void GetByIdAsync_WhenCharacterNotFound_ThrowsKeyNotFoundException()
+    {
+        ulong characterId = 123;
+
+        Character? nullCharacter = null;
+
+        string expectedMessage = "There is no character with this ID";
+
+        _characterRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(nullCharacter);
+
+        SetupCharacterService();
+
+        var exception = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        {
+            await _characterService.GetByIdAsync(characterId);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
 }
