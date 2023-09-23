@@ -72,4 +72,50 @@ public class CharacterServiceTests
             Assert.That(result.Name, Is.EqualTo(expectedResult.Name));
         });
     }
+
+    [Test]
+    public void CreateAsync_WhenCharacterClassEnumWrong_ThrowsArgumentException()
+    {
+        ulong userId = 123;
+        CreateCharacterRequest? request = new()
+        {
+            Class = (CharacterClass) 123,
+            Name = "Character",
+        };
+
+        string expectedMessage = "Supplied character class is wrong.";
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _characterService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+
+    [Test]
+    public void CreateAsync_WhenCharacterWithSuppliedNameAlreadyExists_ThrowsArgumentException()
+    {
+        ulong userId = 123;
+        CreateCharacterRequest? request = new()
+        {
+            Class = CharacterClass.Warrior,
+            Name = "Character",
+        };
+
+        Character foundCharacter = new();
+        string expectedMessage = "Character with supplied name already exists.";
+
+        _characterRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+            .ReturnsAsync(foundCharacter);
+
+        SetupCharacterService();
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _characterService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
 }
