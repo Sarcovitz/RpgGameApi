@@ -48,8 +48,13 @@ public class CharacterService : ICharacterService
     public async Task<SuccessDTO> DeleteAsync(ulong characterId)
     {
         bool result = await _characterRepository.DeleteAsync(characterId);
+        if (!result)
+            throw new Exception("Error occured while deleting character, try again or contact with support.");
 
-        return new SuccessDTO() { IsSuccess = result };
+        return new SuccessDTO() 
+        { 
+            IsSuccess = result 
+        };
     }
 
     public async Task<List<Character>> GetAllAsync(ulong userId)
