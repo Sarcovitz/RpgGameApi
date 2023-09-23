@@ -228,4 +228,45 @@ public class CharacterServiceTests
 
         Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
+
+    [Test]
+    public async Task GetAllAsync_OnSucess_ReturnsListOfCharacters()
+    {
+        ulong userId = 123;
+        List<Character> characters = new()
+        {
+            new Character(),
+            new Character(),
+            new Character(),
+        };
+
+        _characterRepositoryMock.Setup(x => x.GetByUserAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(characters);
+
+        SetupCharacterService();
+
+        var result = await _characterService.GetAllAsync(userId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<List<Character>>());
+        Assert.That(result.Count, Is.EqualTo(characters.Count));
+    }
+
+    [Test]
+    public async Task GetAllAsync_OnSucess_ReturnsEmptyListOfCharacters()
+    {
+        ulong userId = 123;
+        List<Character> characters = new();
+
+        _characterRepositoryMock.Setup(x => x.GetByUserAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(characters);
+
+        SetupCharacterService();
+
+        var result = await _characterService.GetAllAsync(userId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<List<Character>>());
+        Assert.That(result.Count, Is.EqualTo(characters.Count));
+    }
 }
