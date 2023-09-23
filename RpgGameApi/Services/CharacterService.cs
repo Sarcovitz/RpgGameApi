@@ -22,7 +22,7 @@ public class CharacterService : ICharacterService
     {
         if (!Enum.IsDefined(request.Class)) 
             throw new ArgumentException("Supplied character class is wrong.");
-        if (await _characterRepository.GetByNameAsync(request.Name) is not null)
+        if (await _characterRepository.GetByNameAsync(request.Name!) is not null)
             throw new ArgumentException("Character with supplied name already exists.");
 
         User? user = await _userRepository.GetByIdAsync(userId) ??
