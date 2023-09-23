@@ -1,4 +1,5 @@
-﻿using RpgGame.Models.Entity;
+﻿using Azure.Core;
+using RpgGame.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,5 +207,25 @@ public class CharacterServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<SuccessDTO>());
         Assert.That(result.IsSuccess, Is.True);
+    }
+
+    [Test]
+    public void DeleteAsync_WhenDeletingFailsInRepository_ThrowsException()
+    {
+        ulong characterId = 123;
+
+        string expectedMessage = "Error occured while deleting character, try again or contact with support.";
+
+        _characterRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(false);
+
+        SetupCharacterService();
+
+        var exception = Assert.ThrowsAsync<Exception>(async () =>
+        {
+            await _characterService.DeleteAsync(characterId);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
 }
