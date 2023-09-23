@@ -9,8 +9,8 @@ namespace RpgGame.Services;
 
 public class InventoryService : IInventoryService
 {
-    public readonly ICharacterRepository _characterRepository;
-    public readonly IInventoryRepository _inventoryRepository;
+    private readonly ICharacterRepository _characterRepository;
+    private readonly IInventoryRepository _inventoryRepository;
 
     public InventoryService(IInventoryRepository inventoryRepository, 
         ICharacterRepository characterRepository)
@@ -54,7 +54,9 @@ public class InventoryService : IInventoryService
     public async Task<Inventory> GetInventoryByCharacterIdAsync(ulong characterId)
     {
         Inventory? inventory = await _inventoryRepository.GetByCharacterIdAsync(characterId, true);
+        if(inventory is null)
+            throw new KeyNotFoundException($"There is no inventory with character ID: {characterId}");
 
-        return inventory ?? throw new KeyNotFoundException($"There is no inventory with character ID: {characterId}");
+        return inventory;
     }
 }
