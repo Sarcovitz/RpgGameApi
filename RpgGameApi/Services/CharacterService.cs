@@ -66,8 +66,9 @@ public class CharacterService : ICharacterService
 
     public async Task<Character> GetByIdAsync(ulong characterId)
     {
-        Character? character = await _characterRepository.GetByIdAsync(characterId) 
-            ?? throw new KeyNotFoundException("There is no character with this Id");
+        Character? character = await _characterRepository.GetByIdAsync(characterId);
+        if (character is null)
+            throw new KeyNotFoundException("There is no character with this Id");
 
         return character;
     }
