@@ -1,46 +1,55 @@
-name: Build, Test and Code Coverage Report
+name: Build, Test, and Coverage Report
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
 
 env:
-  DOTNET_VERSION: '6.0.413'
+  DOTNET_VERSION: '6.x'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Restore Dependencies
+        
+    - name: Restore dependencies
       run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore
 
-    - name: Build and Test with Code Coverage
+  test-and-report:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Test with cobertura report
       run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=../coverage/
 
-    - name: Generate Coverage Report
+    - name: Install HTML report generator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
-    
+
     - name: Create HTML Report
       run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/coverage-report -reporttypes:Html_Dark -classfilters:"-RpgGame.Configuration.*;-RpgGame.Data.*;-Program"
-
-    - name: Delete Previous Coverage Artifacts
-      uses: geekyeggo/delete-artifact@v1
-      with:
-        name: coverage-report
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v2
       with:
         name: coverage-report
         path: ./coverage/coverage-report
-
