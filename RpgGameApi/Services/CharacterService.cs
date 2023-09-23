@@ -68,7 +68,7 @@ public class CharacterService : ICharacterService
     {
         Character character = new();
         character.UserId = userId;
-        character.Name = request.Name;
+        character.Name = request.Name!;
         character.Class = request.Class;
 
         character.Strength = GetBaseStrenght(request.Class);
