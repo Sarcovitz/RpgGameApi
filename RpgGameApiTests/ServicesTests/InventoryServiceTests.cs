@@ -168,4 +168,21 @@ public class InventoryServiceTests
 
         Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
+
+    [Test]
+    public async Task GetInventoryByIdAsync_OnSuccess_ReturnsInventory()
+    {
+        ulong id = 123;
+
+        Inventory foundInventory = new();
+
+        _inventoryRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>(), true))
+            .ReturnsAsync(foundInventory);
+
+        SetupInventoryService();
+
+        var result = await _inventoryService.GetInventoryByIdAsync(id);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<Inventory>());
+    }
 }
