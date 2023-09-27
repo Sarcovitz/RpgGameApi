@@ -222,4 +222,24 @@ public class InventoryServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<Inventory>());
     }
+
+    [Test]
+    public void GetInventoryByCharacterIdAsync_WhenInventoryNotFound_ThrowsKeyNotFoundException()
+    {
+        ulong id = 123;
+        Inventory? nullInventory = null;
+        string expectedMessage = $"There is no inventory with character ID: {id}";
+
+        _inventoryRepositoryMock.Setup(x => x.GetByCharacterIdAsync(It.IsAny<ulong>(), true))
+            .ReturnsAsync(nullInventory);
+
+        SetupInventoryService();
+
+        var exception = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        {
+            var result = await _inventoryService.GetInventoryByCharacterIdAsync(id);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
 }
