@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Azure.Core;
+using RpgGame.Models.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,5 +77,31 @@ public class InventoryServiceTests
             Assert.That(result.Id, Is.EqualTo(expected.Id));
             Assert.That(result.CharacterId, Is.EqualTo(expected.CharacterId));
         });
+    }
+
+    [Test]
+    public void CreateAsync_WhenCharacterNotFound_ThrowsKeyNotFoundException()
+    {
+        ulong userId = 123;
+        CreateInventoryRequest request = new()
+        {
+            CharacterId = 123,
+        };
+
+        Character? nullCharacter = null;
+
+        _characterRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(nullCharacter);
+
+        SetupInventoryService();
+
+        string expectedMessage = $"There is no character with supplied ID: {request.CharacterId}";
+
+        var exception = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        {
+            var result = await _inventoryService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
     }
 }
