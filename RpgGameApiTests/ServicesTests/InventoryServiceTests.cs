@@ -2,6 +2,7 @@
 using RpgGame.Models.Entity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,6 +99,69 @@ public class InventoryServiceTests
         string expectedMessage = $"There is no character with supplied ID: {request.CharacterId}";
 
         var exception = Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        {
+            var result = await _inventoryService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void CreateAsync_WhenCharacterIdDoesNotMatchUser_ThrowsArgumentException()
+    {
+        ulong userId = 123;
+        CreateInventoryRequest request = new()
+        {
+            CharacterId = 123,
+        };
+
+        Character? foundCharacter = new()
+        {
+            UserId = userId+1,
+        };
+
+        _characterRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(foundCharacter);
+
+        SetupInventoryService();
+
+        string expectedMessage = $"Supplied character ID: {request.CharacterId} does not belong to user making request.";
+
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            var result = await _inventoryService.CreateAsync(userId, request);
+        });
+
+        Assert.That(exception.Message, Is.EqualTo(expectedMessage));
+    }
+    
+    [Test]
+    public void CreateAsync_WhenCharacterAlreadyHasInventory_ThrowsDuplicateNameException()
+    {
+        ulong userId = 123;
+        CreateInventoryRequest request = new()
+        {
+            CharacterId = 123,
+        };
+
+        Character? foundCharacter = new()
+        {
+            UserId = userId,
+        };
+
+        Inventory foundInventory = new();
+
+        _characterRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<ulong>()))
+            .ReturnsAsync(foundCharacter);
+
+        _inventoryRepositoryMock.Setup(x => x.GetByCharacterIdAsync(It.IsAny<ulong>(), It.IsAny<bool>()))
+            .ReturnsAsync(foundInventory);
+
+        SetupInventoryService();
+
+        string expectedMessage = $"Supplied character (ID: {request.CharacterId}) already has a created inventory.";
+
+        var exception = Assert.ThrowsAsync<DuplicateNameException>(async () =>
         {
             var result = await _inventoryService.CreateAsync(userId, request);
         });
