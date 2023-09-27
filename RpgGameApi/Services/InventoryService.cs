@@ -26,7 +26,7 @@ public class InventoryService : IInventoryService
             throw new KeyNotFoundException($"There is no character with supplied ID: {createRequest.CharacterId}");
 
         if (character.UserId != userId)
-            throw new ArgumentException($"Supplied character ID: {createRequest.CharacterId} does not fit user making request.");
+            throw new ArgumentException($"Supplied character ID: {createRequest.CharacterId} does not belong to user making request.");
 
         Inventory? inventory = await _inventoryRepository.GetByCharacterIdAsync(createRequest.CharacterId, false);
         if (inventory is not null)
