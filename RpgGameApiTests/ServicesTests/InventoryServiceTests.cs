@@ -185,4 +185,21 @@ public class InventoryServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<Inventory>());
     }
+    
+    [Test]
+    public async Task GetInventoryByCharacterIdAsync_OnSuccess_ReturnsInventory()
+    {
+        ulong characterId = 123;
+
+        Inventory foundInventory = new();
+
+        _inventoryRepositoryMock.Setup(x => x.GetByCharacterIdAsync(It.IsAny<ulong>(), true))
+            .ReturnsAsync(foundInventory);
+
+        SetupInventoryService();
+
+        var result = await _inventoryService.GetInventoryByCharacterIdAsync(characterId);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.InstanceOf<Inventory>());
+    }
 }
