@@ -1,4 +1,4 @@
-﻿namespace RpgGame.Models.Entity;
+﻿namespace RpgGame.Models.Entity.Abstract;
 
 //PE
 public abstract class EquippablePrototype : ItemPrototype

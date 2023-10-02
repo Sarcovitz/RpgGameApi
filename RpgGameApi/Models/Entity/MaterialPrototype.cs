@@ -1,4 +1,6 @@
-﻿namespace RpgGame.Models.Entity;
+﻿using RpgGame.Models.Entity.Abstract;
+
+namespace RpgGame.Models.Entity;
 
 /*
 FINAL ENTITY

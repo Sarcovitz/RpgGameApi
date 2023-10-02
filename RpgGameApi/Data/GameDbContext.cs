@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RpgGame.Data.Seed;
 using RpgGame.Models.Entity;
+using RpgGame.Models.Entity.Abstract;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgGame.Data;
