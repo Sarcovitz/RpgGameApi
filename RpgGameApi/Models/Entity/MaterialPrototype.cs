@@ -8,7 +8,7 @@ KEYS:
 25_000 - 29_999 5k
 */
 
-public class MaterialPrototype : ItemPrototype
+public class MaterialPrototype : ItemPrototypeBase
 {
     public override ulong Id { get; set; } = 0;
     public override string Name { get; set; } = string.Empty;

@@ -3,12 +3,12 @@ using RpgGame.Models.Entity.Abstract;
 
 namespace RpgGame.Models.Entity;
 
-public class Item
+public abstract class ItemBase
 {
     public Guid Id { get; set; }
 
     public ulong ItemPrototypeId { get; set; }
-    public ItemPrototype? ItemPrototype { get; set; }
+    public ItemPrototypeBase? ItemPrototype { get; set; }
 
     public ushort Quantity { get; set; } = 1;
 

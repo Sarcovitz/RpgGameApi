@@ -2,7 +2,7 @@
 
 namespace RpgGame.Models.Entity;
 
-public class JewelleryPrototype : EquippablePrototype
+public class JewelleryPrototype : ItemPrototypeEquippableAbstract
 {
     public override EquippableBy EquippableBy { get; set; } = EquippableBy.All;
     public override ulong Id { get; set; } = 0;

@@ -1,7 +1,7 @@
 ﻿namespace RpgGame.Models.Entity.Abstract;
 
 //PE
-public abstract class EquippablePrototype : ItemPrototype
+public abstract class ItemPrototypeEquippableAbstract : ItemPrototypeBase
 {
     abstract public EquippableBy EquippableBy { get; set; }
 }

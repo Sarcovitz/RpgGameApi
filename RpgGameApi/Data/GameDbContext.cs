@@ -19,7 +19,7 @@ public class GameDbContext : DbContext
     public DbSet<Character> Characters { get; set; }
     public DbSet<Inventory> Inventories { get; set; }
     public DbSet<InventorySlot> InventorySlots { get; set; }
-    public DbSet<Item> Items { get; set; }
+    public DbSet<ItemBase> Items { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<WeaponPrototype> WeaponPrototypes { get; set; }
 
@@ -36,7 +36,7 @@ public class GameDbContext : DbContext
         modelBuilder.HasDefaultSchema("GAME");
 
         var armorPrototype = modelBuilder.Entity<ArmorPrototype>();
-        armorPrototype.HasBaseType<ItemPrototype>();
+        armorPrototype.HasBaseType<ItemPrototypeBase>();
         armorPrototype.ToTable("ArmorPrototypes");
         armorPrototype.HasData(Seeder.GetArmorPrototypes());
 
@@ -68,21 +68,20 @@ public class GameDbContext : DbContext
             .HasDefaultValueSql("NEWID()");
         inventorySlot.HasOne(inventorySlot => inventorySlot.Item)
             .WithOne(item => item.InventorySlot)
-            .HasForeignKey<Item>(item => item.InventorySlotId);
+            .HasForeignKey<ItemBase>(item => item.InventorySlotId);
 
-        var item = modelBuilder.Entity<Item>();
-        item.ToTable("Items");
+        var item = modelBuilder.Entity<ItemBase>();
+        item.UseTpcMappingStrategy();
         item.HasKey(item => item.Id);
         item.Property(item => item.Id)
             .HasDefaultValueSql("NEWID()");
-        item.HasOne(item => item.ItemPrototype);
 
-        var itemPrototype = modelBuilder.Entity<ItemPrototype>();
+        var itemPrototype = modelBuilder.Entity<ItemPrototypeBase>();
         itemPrototype.UseTpcMappingStrategy();
         itemPrototype.HasKey(itemPrototype => itemPrototype.Id);
 
         var materialPrototype = modelBuilder.Entity<MaterialPrototype>();
-        materialPrototype.HasBaseType<ItemPrototype>();
+        materialPrototype.HasBaseType<ItemPrototypeBase>();
         materialPrototype.ToTable("MaterialPrototypes");
 
         var user = modelBuilder.Entity<User>();
@@ -100,7 +99,7 @@ public class GameDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         var weaponPrototype = modelBuilder.Entity<WeaponPrototype>();
-        weaponPrototype.HasBaseType<ItemPrototype>();
+        weaponPrototype.HasBaseType<ItemPrototypeBase>();
         weaponPrototype.ToTable("WeaponPrototypes");
         weaponPrototype.HasData(Seeder.GetWeaponPrototypes());
 

@@ -14,7 +14,7 @@ KEYS:
             9_000 - 12_999 4k
 */
 
-public class WeaponPrototype : EquippablePrototype
+public class WeaponPrototype : ItemPrototypeEquippableAbstract
 {
     public override EquippableBy EquippableBy { get; set; } = EquippableBy.All;
     public override ulong Id { get; set; } = 0;
