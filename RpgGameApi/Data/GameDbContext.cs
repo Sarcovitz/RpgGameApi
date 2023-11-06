@@ -103,6 +103,10 @@ public class GameDbContext : DbContext
         weaponPrototype.ToTable("WeaponPrototypes");
         weaponPrototype.HasData(Seeder.GetWeaponPrototypes());
 
+        var weapon = modelBuilder.Entity<Weapon>();
+        weapon.HasBaseType<ItemBase>();
+        weapon.ToTable("Weapons");
+
         base.OnModelCreating(modelBuilder);
     }
 }
