@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using RpgGame.Models.Entity.Bases;
 
-namespace RpgGame.Models.Entity;
+namespace RpgGame.Models.Entity.Bases;
 
 public abstract class ItemBase
 {
