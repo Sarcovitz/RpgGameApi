@@ -1,4 +1,4 @@
-﻿namespace RpgGame.Models.Entity.Abstract;
+﻿namespace RpgGame.Models.Entity.Bases;
 
 /*
 ENTITY BASE

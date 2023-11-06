@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using RpgGame.Models.Entity.Abstract;
+using RpgGame.Models.Entity.Bases;
 
 namespace RpgGame.Models.Entity;
 

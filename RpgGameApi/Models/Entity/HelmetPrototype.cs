@@ -1,10 +1,9 @@
-﻿using RpgGame.Models.Entity.Abstract;
+﻿using RpgGame.Models.Entity.Bases;
 
 namespace RpgGame.Models.Entity;
 
-public class HelmetPrototype : ItemPrototypeEquippableAbstract
+public class HelmetPrototype : ItemPrototypeBase
 {
-    public override EquippableBy EquippableBy { get; set; } = EquippableBy.All;
     public override ulong Id { get; set; } = 0;
     public override string Name { set; get; } = string.Empty;
     public override ulong Value { get; set; } = 1;

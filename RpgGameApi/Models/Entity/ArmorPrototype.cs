@@ -1,4 +1,4 @@
-﻿using RpgGame.Models.Entity.Abstract;
+﻿using RpgGame.Models.Entity.Bases;
 
 namespace RpgGame.Models.Entity;
 
@@ -14,9 +14,8 @@ KEYS:
             21_000 - 24_999 4k
 */
 
-public class ArmorPrototype : ItemPrototypeEquippableAbstract
+public class ArmorPrototype : ItemPrototypeBase
 {
-    public override EquippableBy EquippableBy { get; set; } = EquippableBy.All;
     public override ulong Id { get; set; } = 0;
     public override string Name { set; get; } = string.Empty;
     public override ulong Value { get; set; } = 1;
