@@ -1,10 +1,7 @@
-﻿using RpgGame.Models.Entity.Abstract;
+﻿namespace RpgGame.Models.Entity.Bases;
 
-namespace RpgGame.Models.Entity;
-
-public class JewelleryPrototype : EquippablePrototype
+public class JewelleryPrototype : ItemPrototypeBase
 {
-    public override EquippableBy EquippableBy { get; set; } = EquippableBy.All;
     public override ulong Id { get; set; } = 0;
     public override string Name { set; get; } = string.Empty;
     public override ulong Value { get; set; } = 1;

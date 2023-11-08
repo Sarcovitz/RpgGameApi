@@ -1,10 +1,10 @@
-﻿namespace RpgGame.Models.Entity.Abstract;
+﻿namespace RpgGame.Models.Entity.Bases;
 
 /*
-BASE ENTITY
+ENTITY BASE
 */
 
-public abstract class ItemPrototype
+public abstract class ItemPrototypeBase
 {
     abstract public ulong Id { get; set; }
     abstract public string Name { get; set; }
